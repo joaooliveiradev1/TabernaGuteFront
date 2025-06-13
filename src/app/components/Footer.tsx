@@ -58,7 +58,7 @@ export function Footer(){
                     </ul>
                 </div>
             </div>
-            
+            <Image></Image>
         </section>
       );
 }
