@@ -14,13 +14,21 @@ export function Footer() {
               entre amigos ou eventos especiais, estamos prontos para receber você.
             </p>
             <div className="flex pt-6 gap-3">
-              <div className="flex bg-[#152043] w-[44px] h-[44px] items-center justify-center rounded rounded-2xl hover:bg-[#252499]">
-                <a href="#" className="">
+              <div className="flex bg-[#152043] w-[44px] h-[44px] items-center justify-center rounded-2xl hover:bg-[#252499]">
+                <a
+                  href="https://www.facebook.com/share/18YxeYtx6C/"
+                  target="_blank"
+                  className=""
+                >
                   <Image src={"/facebook.png"} width={20} height={20} alt={""} />
                 </a>
               </div>
-              <div className="flex bg-[#152043] w-[44px] h-[44px] items-center justify-center rounded rounded-2xl hover:bg-[#252499]">
-                <a href="#" className="">
+              <div className="flex bg-[#152043] w-[44px] h-[44px] items-center justify-center rounded-2xl hover:bg-[#252499]">
+                <a
+                  href="https://www.instagram.com/tabernadogute?igsh=czZxZDJ1ZmtkcDFy"
+                  target="_blank"
+                  className=""
+                >
                   <Image src={"/instagram.png"} width={20} height={20} alt={""} />
                 </a>
               </div>
@@ -54,7 +62,13 @@ export function Footer() {
           </div>
           <div className="max-w-88">
             <h2>Mapa</h2>
-            <div className="w-50 h-40 bg-zinc-500"></div>
+            <div className="w-88 h-[225px] overflow-hidden shadow-lg bg-gray-800 ">
+              <iframe
+                className="w-full h-full"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.258333886889!2d-38.4919233!3d-3.9907378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7b8b43a0acb27f5%3A0x61f9392e4c043c28!2sAv.%20Joaquim%20Nogueira%20Lopes%2C%202998%20-%20Horizonte%2C%20CE%2C%2062880-000!5e0!3m2!1spt-BR!2sbr!4v1621362128974!5m2!1spt-BR!2sbr"
+                frameBorder="0"
+              ></iframe>
+            </div>
           </div>
         </div>
         <hr className="" />

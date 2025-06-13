@@ -1,22 +1,41 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@radix-ui/react-label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, UserCircle2 } from "lucide-react";
-
-
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
+  // Estado Login
+  const [loginForm, setLoginForm] = useState({
+    cpfOrEmail: "",
+    senhaOuDataNascimento: "",
+  });
   const { data: session } = useSession();
   const isAuthenticated = !!session;
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  
 
   // Estado de cadastro
   const [form, setForm] = useState({
@@ -27,17 +46,20 @@ export function Navbar() {
     email: "",
   });
 
-  // Estado de login
-  const [loginForm, setLoginForm] = useState({
-    cpfOrEmail: "",
-    senhaOuDataNascimento: "",
-  });
+  // Estado de campo
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
+
+  useEffect(() => {
+    setIsAdminLogin(loginForm.cpfOrEmail.includes("@"));
+  }, [loginForm.cpfOrEmail]);
 
   const [mensagem, setMensagem] = useState("");
 
   const handleReservar = () => {
     if (isAuthenticated) {
-      alert("Você já está autenticado como: " + session.user.nome + "\n" + session.user.email)
+      alert(
+        "Você já está autenticado como: " + session.user.nome + "\n" + session.user.email
+      );
     } else {
       setOpen(true);
     }
@@ -56,7 +78,7 @@ export function Navbar() {
     setMensagem("");
 
     try {
-      const response = await fetch("/auth/register", {
+      const response = await fetch("http://localhost:8080/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -71,6 +93,7 @@ export function Navbar() {
         setForm({ nome: "", cpf: "", dataNascimento: "", telefone: "", email: "" });
         setTimeout(() => setOpen(false), 2000);
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setMensagem("Erro ao enviar dados.");
     }
@@ -79,6 +102,7 @@ export function Navbar() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensagem("");
+    console.log(loginForm.senhaOuDataNascimento)
 
     const res = await signIn("credentials", {
       redirect: false,
@@ -124,14 +148,25 @@ export function Navbar() {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                onClick={() => {
-                  window.location.href = "/reserva"; // ou use useRouter
-                }}
-                className="cursor-pointer"
-              >
-                Minhas Reservas
-              </DropdownMenuItem>
+              {session.user.role === "ADMIN" ? (
+                <DropdownMenuItem
+                  onClick={() => {
+                    router.push("/admin");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Painel Admin
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => {
+                    router.push("/reserva");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Minhas Reservas
+                </DropdownMenuItem>
+              )}
 
               <DropdownMenuItem
                 onClick={() => signOut()}
@@ -235,20 +270,25 @@ export function Navbar() {
                       <Input
                         id="cpfOrEmail"
                         value={loginForm.cpfOrEmail}
-                        onChange={handleLoginChange}
+                        onChange={(e) => {
+                          handleLoginChange(e);
+                          setMensagem(""); // limpa mensagens antigas
+                        }}
                         required
                       />
                     </div>
 
                     <div>
                       <Label htmlFor="senhaOuDataNascimento">
-                        Senha ou Data de Nascimento
+                        {loginForm.cpfOrEmail.includes("@")
+                          ? "Senha"
+                          : "Data de Nascimento"}
                       </Label>
                       <Input
                         id="senhaOuDataNascimento"
+                        type={isAdminLogin ? "password" : "date"}
                         value={loginForm.senhaOuDataNascimento}
                         onChange={handleLoginChange}
-                        type="text"
                         required
                       />
                     </div>

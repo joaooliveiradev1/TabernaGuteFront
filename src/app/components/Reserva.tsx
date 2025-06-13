@@ -1,79 +1,199 @@
-export function Reserva(){
-    return(
-           <section className="py-20 bg-gradient-to-b from-white to-gray-50">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-900 relative inline-block after:content-[''] after:block after:h-1 after:w-16 after:bg-blue-800 after:mx-auto after:mt-2">
-                    Reserve sua Mesa
-                    </h2>
-                    <p className="text-gray-600 mt-4 max-w-xl mx-auto">
-                    Planeje sua visita à Taberna do Gute e tenha uma experiência gastronômica inesquecível. Nosso chef está ansioso para recebê-lo.
-                    </p>
-                </div>
+"use client";
 
-                <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
-                    <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Nome completo</label>
-                            <input type="text" placeholder="Seu nome completo" className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800" />
-                        </div>
+export function Reserva() {
+  const { data: session } = useSession();
+  const router = useRouter();
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" placeholder="seu.email@exemplo.com" className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                            <input type="tel" placeholder="(00) 00000-0000" className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800" />
-                        </div>
+  const [form, setForm] = useState({
+    data: "",
+    hora: "",
+    qtnAdultos: 1,
+    qtnCriancas: 0,
+    hasPets: false,
+    observacoes: "",
+  });
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Número de pessoas</label>
-                            <select className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800">
-                            <option>1 pessoa</option>
-                            <option>2 pessoas</option>
-                            <option>3 pessoas</option>
-                            <option>4 pessoas</option>
-                            <option>6 pessoas</option>
-                            <option>7 pessoas</option>
-                            <option>8 pessoas</option>
-                            <option>9 pessoas</option>
-                            <option>10 pessoas</option>
-                            <option>+Mais de 10 pessoas</option>
-                            </select>
-                        </div>
+  const [mensagem, setMensagem] = useState("");
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Data</label>
-                            <input type="date" className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800" />
-                        </div>
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    setForm({
+      ...form,
+      [name]:
+        type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : value,
+    });
+  };
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Hora</label>
-                            <select className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800">
-                                <option>11:30</option>
-                                <option>12:00</option>
-                                <option>13:00</option>
-                                <option>14:00</option>
-                                <option>15:00</option>
-                            </select>
-                        </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">
-                                Solicitações especiais
-                            </label>
-                            <textarea rows="4" placeholder="Informe se há alguma necessidade especial ou preferência." 
-                            className="mt-1 w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800"/>
-                        </div>
+    if (!session?.user?.accessToken) {
+      setMensagem("Usuário não autenticado.");
+      return;
+    }
 
-                        <div className="md:col-span-2 flex justify-center">
-                            <button type="submit" className="bg-yellow-300 text-black px-6 py-3 rounded-md hover:bg-yellow-400 transition">
-                                Confirmar Reserva
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
+    const dataHora = new Date(`${form.data}T${form.hora}:00`);
+
+    const payload = {
+      clienteId: session.user.id, // certifique-se que o `session.user` tenha `id` disponível
+      dataHora: dataHora.toISOString(),
+      qtnAdultos: Number(form.qtnAdultos),
+      qtnCriancas: Number(form.qtnCriancas),
+      hasPets: form.hasPets,
+      observacoes: form.observacoes,
+    };
+
+    try {
+      const res = await fetch("/reserva", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      setMensagem("Reserva realizada com sucesso!");
+      setForm({
+        data: "",
+        hora: "",
+        qtnAdultos: 1,
+        qtnCriancas: 0,
+        hasPets: false,
+        observacoes: "",
+      });
+
+      // Redireciona para página de reservas ou mostra mensagem de sucesso
+      router.push("/minhas-reservas");
+    } catch (error: any) {
+      setMensagem("Erro ao fazer reserva: " + error.message);
+    }
+  };
+
+  if (!session) {
+    return (
+      null
     );
+  }
+
+  return (
+    <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-bold text-gray-900 relative inline-block after:content-[''] after:block after:h-1 after:w-16 after:bg-blue-800 after:mx-auto after:mt-2">
+          Reserve sua Mesa
+        </h2>
+        <p className="text-gray-600 mt-4 max-w-xl mx-auto">
+          Planeje sua visita à Taberna do Gute e tenha uma experiência gastronômica
+          inesquecível.
+        </p>
+      </div>
+
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Data</label>
+            <input
+              type="date"
+              name="data"
+              value={form.data}
+              onChange={handleChange}
+              required
+              className="mt-1 w-full border rounded-md px-4 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Hora</label>
+            <select
+              name="hora"
+              value={form.hora}
+              onChange={handleChange}
+              required
+              className="mt-1 w-full border rounded-md px-4 py-2"
+            >
+              <option value="">Selecione</option>
+              <option value="11:30">11:30</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Adultos</label>
+            <input
+              type="number"
+              name="qtnAdultos"
+              value={form.qtnAdultos}
+              onChange={handleChange}
+              min={1}
+              required
+              className="mt-1 w-full border rounded-md px-4 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Crianças</label>
+            <input
+              type="number"
+              name="qtnCriancas"
+              value={form.qtnCriancas}
+              onChange={handleChange}
+              min={0}
+              className="mt-1 w-full border rounded-md px-4 py-2"
+            />
+          </div>
+
+          <div className="md:col-span-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="hasPets"
+              checked={form.hasPets}
+              onChange={handleChange}
+              className="w-4 h-4"
+            />
+            <label className="text-sm text-gray-700">Levarei pets</label>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">Observações</label>
+            <textarea
+              name="observacoes"
+              rows={4}
+              value={form.observacoes}
+              onChange={handleChange}
+              className="mt-1 w-full border rounded-md px-4 py-2"
+              placeholder="Ex: cadeira para criança, alergia, etc."
+            />
+          </div>
+
+          <div className="md:col-span-2 flex justify-center">
+            <button
+              type="submit"
+              className="bg-yellow-300 text-black px-6 py-3 rounded-md hover:bg-yellow-400 transition"
+            >
+              Confirmar Reserva
+            </button>
+          </div>
+
+          {mensagem && (
+            <div className="md:col-span-2 text-center text-sm text-red-600 mt-2">
+              {mensagem}
+            </div>
+          )}
+        </form>
+      </div>
+    </section>
+  );
 }
