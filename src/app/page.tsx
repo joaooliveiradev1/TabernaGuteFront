@@ -1,3 +1,4 @@
+import { AdminDashboard } from "./components/AdminDashboard";
 import { Footer } from "./components/Footer";
 import { Galeria } from "./components/Galeria";
 import { HomeCard} from "./components/HomeCard";

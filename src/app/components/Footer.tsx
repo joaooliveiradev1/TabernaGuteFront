@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 
+
 export function Footer(){
      return (
         <section className="flex justify-center bg-[#0E131F] pt-[4rem] pb-[2rem] text-white">

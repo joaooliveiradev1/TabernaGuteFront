@@ -68,7 +68,7 @@ export function Reserva(){
                         </div>
 
                         <div className="md:col-span-2 flex justify-center">
-                            <button type="submit" className="bg-blue-800 text-white px-6 py-3 rounded-md hover:bg-blue-900 transition">
+                            <button type="submit" className="bg-yellow-300 text-black px-6 py-3 rounded-md hover:bg-yellow-400 transition">
                                 Confirmar Reserva
                             </button>
                         </div>
