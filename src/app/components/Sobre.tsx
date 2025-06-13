@@ -9,7 +9,7 @@ export function Sobre(){
             <div className="flex flex-col lg:flex-row gap-12">
                 <div className="flex-1">
                 <p className="mb-4">
-                    A Taberna do Gute nasceu da paixão do Chef Artur Schmidt por unir suas raízes alemãs com os 
+                    A <span className="text-blue-600">Taberna do Gute</span> nasceu da paixão do Chef Artur Schmidt por unir suas raízes alemãs com os 
                     sabores vibrantes do Brasil. Localizado em Horizonte, Ceará, nosso restaurante oferece uma experiência gastronômica única que celebra essa fusão cultural.
                 </p>
                 <p className="mb-4">
