@@ -6,8 +6,8 @@ export function Footer() {
       <div className="mx-auto">
         <div className="flex justify-between gap-20 min-h-77">
           <div className="max-w-88">
-            <h2 className="font-bold text-xl mb-3">Taberna do Gute</h2>
-            <p>
+            <h2 className="font-bold text-xl mb-3 font-titulo">Taberna do Gute</h2>
+            <p className="font-texto">
               Sabor, tradição e aconchego em um só lugar. Inspirada na culinária alemã com
               um toque brasileiro, nossa taberna oferece uma experiência gastronômica
               única, em um ambiente acolhedor. Seja para um almoço em família, um encontro
@@ -35,33 +35,33 @@ export function Footer() {
             </div>
           </div>
           <div className="max-w-88">
-            <h2 className="text-xl mb-3 font-bold">Informações</h2>
+            <h2 className="text-xl mb-3 font-bold font-titulo">Informações</h2>
 
             <ul className="flex flex-col gap-4 ">
               <div className="flex items-center gap-3">
                 <Image src={"/location.png"} width={20} height={20} alt={""} />
-                <li className="flex gap-2">
+                <li className="flex gap-2 font-texto">
                   Av. Joaquim Nogueira Lopes, 2998 - Horizonte, CE, 62880-000
                 </li>
               </div>
               <div className="flex items-center gap-3">
                 <Image src={"/telefone.png"} width={20} height={20} alt={""} />
-                <li className="flex gap-2">(85) 98181-5840</li>
+                <li className="flex gap-2 font-texto">(85) 98181-5840</li>
               </div>
               <div className="flex items-center gap-3">
                 <Image src={"/mensagem.png"} width={20} height={20} alt={""} />
-                <li className="flex gap-2">schmidttaberna@hotmail.com</li>
+                <li className="flex gap-2 font-texto">schmidttaberna@hotmail.com</li>
               </div>
               <div className="flex items-center gap-3">
                 <Image src={"/cronometro.png"} width={20} height={20} alt={""} />
-                <li className="flex gap-2">
+                <li className="flex gap-2 font-texto">
                   Terça - Domingo: 11:30 - 15:00 Segunda: Fechado
                 </li>
               </div>
             </ul>
           </div>
           <div className="max-w-88">
-            <h2>Mapa</h2>
+            <h2 className="font-titulo">Mapa</h2>
             <div className="w-88 h-[225px] overflow-hidden shadow-lg bg-gray-800 rounded-xl">
               <iframe
                 className="w-full h-full"

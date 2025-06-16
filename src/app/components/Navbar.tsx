@@ -24,6 +24,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, UserCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function Navbar() {
   // Estado Login
@@ -121,15 +122,19 @@ export function Navbar() {
   };
 
   return (
-    <header className="bg-[#0B0E17] text-white h-16 flex items-center justify-between px-16 z-50 relative">
-      <h1 className="text-yellow-400 font-bold text-lg">Taberna do Gute</h1>
+    <header className="bg-[#0B0E17] text-white h-16 flex items-center justify-between px-16 z-50 fixed top-0 left-0 w-full">
+      <h1 className="text-yellow-400 font-bold font-titulo text-lg">Taberna do Gute</h1>
 
       <nav className="flex items-center gap-10">
-        <ul className="flex gap-6 text-sm font-medium">
-          <li className="hover:text-yellow-400 cursor-pointer">Início</li>
-          <li className="hover:text-yellow-400 cursor-pointer">Cardápio</li>
-          <li className="hover:text-yellow-400 cursor-pointer">Sobre</li>
-          <li className="hover:text-yellow-400 cursor-pointer">Galeria</li>
+
+
+        <ul className="flex gap-6 text-sm font-medium font-texto">
+          {session?.user.role == "ADMIN" ? <li><Link href="">Painel de Administrador</Link></li> : null}
+          
+          <li><a href="#inicio" className="hover:text-yellow-400 cursor-pointer">Início</a></li>
+          <li><a href="#cardapio" className="hover:text-yellow-400 cursor-pointer">Cardápio</a></li>
+          <li><a href="#sobre" className="hover:text-yellow-400 cursor-pointer">Sobre</a></li>
+          <li><a href="#galeria" className="hover:text-yellow-400 cursor-pointer">Galeria</a></li>
         </ul>
         {isAuthenticated ? (
           <DropdownMenu>
@@ -183,7 +188,7 @@ export function Navbar() {
                 onClick={handleReservar}
                 className="bg-yellow-300 text-black text-sm px-4 py-2 rounded-md font-semibold hover:bg-yellow-400 transition"
               >
-                Reservar Mesa
+                Acesse sua conta
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-white text-black max-w-md w-full p-6 rounded-md shadow-xl z-[9999]">
