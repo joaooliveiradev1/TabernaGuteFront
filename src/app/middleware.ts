@@ -19,7 +19,7 @@ export async function middleware(req: NextRequestWithAuth) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (pathname.startsWith("/admin") && user.role !== "COORDENACAO") {
+  if (pathname.startsWith("/admin") && user.role !== "ADMIN") {
     return Response.redirect(new URL("/404", req.url));
   }
 
@@ -33,5 +33,5 @@ export default withAuth(middleware, callbackOptions);
 
 // Define em quais rotas o middleware será aplicado
 export const config = {
-  matcher: ["/admin/:path*", "/reserva/:path*"], 
+  matcher: ["/admin/:path*", "/minhas-reservas/:path*"], 
 };
