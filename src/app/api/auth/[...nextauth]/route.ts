@@ -3,9 +3,13 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 
+const IdadeToken = 1 * 24 * 60 * 60 // 1 dia
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: IdadeToken,
+
   },
   debug: true,
   providers: [
@@ -30,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         if (!res.ok || !user?.token) return null;
 
         return {
-          id: user.id || user.email, // obrigatório
+          id: user.id, // obrigatório
           email: user.email,
           nome: user.nome,
           role: user.role,
@@ -43,6 +47,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
+        token.id = user.id
         token.role = user.role;
         token.nome = user.nome;
       }
@@ -50,6 +55,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       session.user.accessToken = token.accessToken;
+      session.user.id = token.id;
       session.user.role = token.role;
       session.user.nome = token.nome;
       return session;

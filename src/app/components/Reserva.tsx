@@ -3,6 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
+import { AxiosError } from "axios";
 
 export function Reserva() {
   const { data: session } = useSession();
@@ -14,6 +16,7 @@ export function Reserva() {
     qtnAdultos: 1,
     qtnCriancas: 0,
     hasPets: false,
+    pedidoPrevios: [],
     observacoes: "",
   });
 
@@ -25,10 +28,7 @@ export function Reserva() {
     const { name, value, type } = e.target;
     setForm({
       ...form,
-      [name]:
-        type === "checkbox"
-          ? (e.target as HTMLInputElement).checked
-          : value,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     });
   };
 
@@ -52,15 +52,16 @@ export function Reserva() {
     };
 
     try {
-      const res = await fetch("/reserva", {
+      console.log(payload);
+      console.log(session.user);
+      const res = await api("/reserva", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        data: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text);
+      if (!res.data) {
+        throw new Error("Servidor não está respondendo. Tente mais tarde");
       }
 
       setMensagem("Reserva realizada com sucesso!");
@@ -69,21 +70,29 @@ export function Reserva() {
         hora: "",
         qtnAdultos: 1,
         qtnCriancas: 0,
+        pedidoPrevios: [],
         hasPets: false,
         observacoes: "",
       });
 
       // Redireciona para página de reservas ou mostra mensagem de sucesso
       router.push("/minhas-reservas");
-    } catch (error: any) {
-      setMensagem("Erro ao fazer reserva: " + error.message);
+    } catch (err) {
+      const error = err as AxiosError;
+
+      // Captura mensagem vinda do backend
+      const mensagem =
+        error.response?.data && typeof error.response.data === "string"
+          ? error.response.data
+          : "Erro ao fazer reserva. Tente novamente.";
+
+      console.error("Erro na reserva:", error);
+      setMensagem(mensagem);
     }
   };
 
   if (!session) {
-    return (
-      null
-    );
+    return null;
   }
 
   return (
