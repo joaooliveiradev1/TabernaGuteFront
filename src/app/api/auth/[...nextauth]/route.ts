@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user.token;
         token.id = user.id
+        token.sub = user.id.toString()
         token.role = user.role;
         token.nome = user.nome;
       }
