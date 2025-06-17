@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,18 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Reserva } from "@/types";
 
-type Reserva = {
-  id: number;
-  dataHora: string;
-  qtnAdultos: number;
-  qtnCriancas: number;
-  hasPets: boolean;
-  pedidoPrevios: string[];
-  observacoes: string;
-  reservaStatus: string;
-  reservaFinalizada: boolean;
-};
 
 export default function ReservaPage() {
   const { data: session, status } = useSession();
@@ -108,7 +99,7 @@ export default function ReservaPage() {
   };
 
   return (
-    <section className="px-6 py-10 max-w-4xl mx-auto">
+    <section className="px-6 py-10 max-w-4xl mx-auto ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-bold text-3xl">Minhas Reservas</h1>
         <Dialog open={open} onOpenChange={setOpen}>

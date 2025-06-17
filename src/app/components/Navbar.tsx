@@ -129,8 +129,8 @@ export function Navbar() {
 
 
         <ul className="flex gap-6 text-sm font-medium font-texto">
-          {session?.user.role == "ADMIN" ? <li><Link href="">Painel de Administrador</Link></li> : null}
-          
+          {session?.user.role == "ADMIN" ? <li><Link href="/admin">Painel de Administrador</Link></li> : null}
+          {session?.user.role == "CLIENTE" ? <li><Link href="/minhas-reservas">Reservas</Link></li>: null }
           <li><a href="#inicio" className="hover:text-yellow-400 cursor-pointer">Início</a></li>
           <li><a href="#cardapio" className="hover:text-yellow-400 cursor-pointer">Cardápio</a></li>
           <li><a href="#sobre" className="hover:text-yellow-400 cursor-pointer">Sobre</a></li>

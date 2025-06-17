@@ -96,9 +96,9 @@ export function Reserva() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-20 bg-gradient-to-b from-white to-gray-50 font-texto">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 relative inline-block after:content-[''] after:block after:h-1 after:w-16 after:bg-blue-800 after:mx-auto after:mt-2">
+        <h2 className="text-4xl font-titulo font-bold text-gray-900 relative inline-block after:content-[''] after:block after:h-1 after:w-16 after:bg-blue-800 after:mx-auto after:mt-2">
           Reserve sua Mesa
         </h2>
         <p className="text-gray-600 mt-4 max-w-xl mx-auto">
